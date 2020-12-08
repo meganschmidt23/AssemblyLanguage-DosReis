@@ -1,0 +1,53 @@
+;Megan Schmidt
+; Write an assembly language program that reads in a string 
+; and displays its length.
+
+; label         instruction 
+start:      ldc requestMsg      ; set ac = address of start of string
+            sout                ; display all letters until null character
+            ldc stringBuffer    ; set where we want our string to be stored
+            sin                 ; read in this string
+            ldc countingMsg     ; notify the user we will start the loop and begin counting
+            sout                ; display string to user
+            ldc '\n'
+            aout
+
+countLoop:  ldc stringBuffer    ; go to start of string
+            add index           ; add index
+            ldi                 ; ac = m[startOfString + index]
+            jz doneString       ; if zero(end of string) go to doneString
+            ld index            ; otherwise, update the index
+            add @1
+            st index
+            ld count            ; prepare to update count
+            add @1
+            st count
+            ja countLoop        ; go to the loop again
+
+doneString: ldc '\n'
+            aout
+            ldc finalCount      ; prepare message for user
+            sout
+            ld count            ; display the length of the string
+            dout
+            ldc '\n'
+            aout
+            ldc anotherProblem  ; Want to do again?
+            sout
+            ain
+            sub @121             ; if y, go to start
+            jz start
+                                ; otherwise, done
+end:        halt
+
+; DATA SECTION
+
+requestMsg:     dw "Enter a string to count the length of: "
+countingMsg:    dw "We will begin counting now"
+finalCount:     dw "The length of our string is "
+anotherProblem: dw "Would you like to input another string? y for yes "
+count:          dw 0
+index:          dw 0
+@1:             dw 1
+@121:            dw 121
+stringBuffer:   dw 250 dup 0
